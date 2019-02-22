@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">VisitCardPro</string>
+    <string name="error_invalid_password">Invalid password</string>
+    <string name="error_field_required">Required field</string>
+    <string name="error_invalid_email">Invalid email</string>
+</resources>
