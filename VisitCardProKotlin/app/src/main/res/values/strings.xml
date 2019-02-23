@@ -3,4 +3,7 @@
     <string name="error_invalid_password">Invalid password</string>
     <string name="error_field_required">Required field</string>
     <string name="error_invalid_email">Invalid email</string>
+    <string name="title_contact">Contacts</string>
+    <string name="title_card">Cards</string>
+    <string name="email_title">Email</string>
 </resources>

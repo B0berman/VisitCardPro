@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_card"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="@string/title_card" />
+
+    <item
+        android:id="@+id/navigation_contact"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="@string/title_contact" />
+
+</menu>

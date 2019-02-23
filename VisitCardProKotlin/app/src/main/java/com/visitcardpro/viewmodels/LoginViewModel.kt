@@ -40,7 +40,6 @@ class LoginViewModel(var loginActivity: LoginActivity): ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    onConnected()
 //                    error("KO")
                 }
             })
@@ -74,7 +73,9 @@ class LoginViewModel(var loginActivity: LoginActivity): ViewModel() {
         loginActivity.startActivity(launchNextActivity)    }
 
     fun getLoginButtonListener() =  View.OnClickListener {
-        attemptLogin()
+
+        onConnected()
+        //attemptLogin()
     }
 
     fun getPasswordEditorActionListener() = TextView.OnEditorActionListener { _, id, _ ->
