@@ -1,15 +1,14 @@
 package com.visitcardpro.viewmodels
 
+import android.app.AlertDialog
 import android.arch.lifecycle.ViewModel
 import android.content.Intent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import com.visitcardpro.views.MainActivity
 import com.visitcardpro.api.AuthenticationService
 import com.visitcardpro.api.Client
 import com.visitcardpro.api.CustomCallback
-import okhttp3.Headers
 import retrofit2.Call
 import retrofit2.Response
 import com.visitcardpro.api.forms.RegisterFormValidator
@@ -32,6 +31,7 @@ class RegisterViewModel(var registerActivity: RegisterActivity): ViewModel() {
 
             val call = authenticationService
                 .signUp(utils.generateAuthorization("${registerFormValidator.email}:${registerFormValidator.password}"))
+            print("caallllllll")
             call.enqueue(object : CustomCallback<ResponseBody>(registerActivity, 201) {
 
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) = when(response.code()) {
@@ -40,7 +40,16 @@ class RegisterViewModel(var registerActivity: RegisterActivity): ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    error("KO")
+                    print("---MESSAGE--- : $t.message)")
+                    print("---CAUSE--- : ${t.cause})")
+                    registerActivity.showProgress(false)
+                    val builder = AlertDialog.Builder(registerActivity)
+                    builder.setMessage("$t.cause - $t.message")
+                    builder.setCancelable(true)
+                    builder.setPositiveButton("Ok") { dialog, _ -> dialog.cancel() }
+                    val alert = builder.create()
+                    alert.show()
+
                 }
             })
         } else

@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ServiceFactory {
-    private val BASE_URI = "http://92.222.82.30:8080/visitcardpro/"
+    private val BASE_URI = "http://10.0.3.2:8080/"
 
     fun getAuthenticationService(): AuthenticationService = buildService().create(AuthenticationService::class.java)
 

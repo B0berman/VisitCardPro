@@ -13,13 +13,15 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.databinding.DataBindingUtil
 import com.visitcardpro.R
 import com.visitcardpro.viewmodels.LoginViewModel
+import com.visitcardpro.databinding.ActivityLoginBinding
 
 
 class LoginActivity : AppCompatActivity() {
 
-    private val viewModel: LoginViewModel = LoginViewModel(this)
+    private val viewModel: LoginViewModel = LoginViewModel()
     lateinit var mEmailView: EditText
     lateinit var mPasswordView: EditText
     lateinit var mProgressView: View
@@ -31,6 +33,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        val binding = DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
+        binding.viewModel = viewModel
+//        binding.
+
+        viewModel.loginActivity = this
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.CAMERA

@@ -1,6 +1,5 @@
 package com.visitcardpro.viewmodels
 
-import android.arch.lifecycle.ViewModel
 import android.content.Intent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -12,26 +11,29 @@ import com.visitcardpro.api.CustomCallback
 import okhttp3.Headers
 import retrofit2.Call
 import retrofit2.Response
-import com.visitcardpro.api.forms.LoginFormValidator
 import com.visitcardpro.views.LoginActivity
 import com.visitcardpro.views.RegisterActivity
 import okhttp3.ResponseBody
+import android.app.AlertDialog
+import android.arch.lifecycle.ViewModel
+import android.widget.Toast
+import viewmodels.LoginForm
 
-class LoginViewModel(var loginActivity: LoginActivity): ViewModel() {
+class LoginViewModel: ViewModel() {
+
+    lateinit var loginActivity: LoginActivity
 
     private val authenticationService: AuthenticationService = Client.serviceFactory.getAuthenticationService()
+    var loginForm: LoginForm = LoginForm()
 
     private fun attemptLogin() {
-
-        var loginFormValidator = LoginFormValidator(loginActivity)
-
-        if (loginFormValidator.isValidForm()) {
+        if (loginForm.isValidForm()) {
             loginActivity.showProgress(true)
 
-            Client.auth.email = loginFormValidator.email
+            Client.auth.email = loginForm.email
 
             val call = authenticationService
-                .signIn(utils.generateAuthorization("${loginFormValidator.email}:${loginFormValidator.password}"))
+                .signIn(utils.generateAuthorization("${loginForm.email}:${loginForm.password}"))
             call.enqueue(object : CustomCallback<ResponseBody>(loginActivity, 202) {
 
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) = when(response.code()) {
@@ -41,10 +43,18 @@ class LoginViewModel(var loginActivity: LoginActivity): ViewModel() {
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 //                    error("KO")
+                    val builder = AlertDialog.Builder(loginActivity.baseContext)
+                    builder.setMessage("$t.cause - $t.message")
+                    builder.setCancelable(true)
+                    builder.setPositiveButton("Ok") { dialog, _ -> dialog.cancel() }
+                    val alert = builder.create()
+                    alert.show()
+                    loginActivity.showProgress(false)
                 }
             })
         } else
-            loginFormValidator.focusView!!.requestFocus()
+            Toast.makeText(loginActivity, "FORM ERROR", Toast.LENGTH_SHORT).show()
+        //loginForm.focusView!!.requestFocus()
     }
 
     private fun onConnected() {
@@ -62,6 +72,7 @@ class LoginViewModel(var loginActivity: LoginActivity): ViewModel() {
             "" -> error("failed to connect")
             else -> {
                 utils.savePreferences("refresh_token", refreshToken, loginActivity)
+                utils.savePreferences("access_token", Client.auth.accessToken, loginActivity)
                 onConnected()
             }
         }
@@ -73,8 +84,12 @@ class LoginViewModel(var loginActivity: LoginActivity): ViewModel() {
         loginActivity.startActivity(launchNextActivity)    }
 
     fun getLoginButtonListener() =  View.OnClickListener {
+        println("JE PASSE ICI EMAIL: ${loginForm.email} ||| PASSWORD: ${loginForm.password}")
+        if (loginForm.isValidForm())
+            onConnected()
+        else
+            Toast.makeText(loginActivity, "FORM ERROR", Toast.LENGTH_SHORT).show()
 
-        onConnected()
         //attemptLogin()
     }
 
