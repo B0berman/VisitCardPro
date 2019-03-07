@@ -4,6 +4,7 @@ import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
@@ -22,12 +23,7 @@ import com.visitcardpro.databinding.ActivityLoginBinding
 class LoginActivity : AppCompatActivity() {
 
     private val viewModel: LoginViewModel = LoginViewModel()
-    lateinit var mEmailView: EditText
-    lateinit var mPasswordView: EditText
-    lateinit var mProgressView: View
-    lateinit var mLoginFormView: View
-    private lateinit var mLoginButton: Button
-    private lateinit var mNoAccountButton: Button
+    private lateinit var mPasswordView: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +31,6 @@ class LoginActivity : AppCompatActivity() {
 
         val binding = DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
         binding.viewModel = viewModel
-//        binding.
 
         viewModel.loginActivity = this
         if (ContextCompat.checkSelfPermission(
@@ -52,39 +47,11 @@ class LoginActivity : AppCompatActivity() {
                 0
             )
         }
-        mEmailView = findViewById(R.id.email_login)
-        mLoginButton = findViewById(R.id.sign_in_button)
         mPasswordView = findViewById(R.id.password_login)
-        mLoginFormView = findViewById(R.id.login_form)
-        mProgressView = findViewById(R.id.login_progress)
-        mNoAccountButton = findViewById(R.id.no_account_button)
+        viewModel.mLoginFormView = findViewById(R.id.login_form)
+        viewModel.mProgressView = findViewById(R.id.login_progress)
 
         mPasswordView.setOnEditorActionListener(viewModel.getPasswordEditorActionListener())
-        mLoginButton.setOnClickListener(viewModel.getLoginButtonListener())
-        mNoAccountButton.setOnClickListener(viewModel.getNoAccountButtonListener())
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    fun showProgress(show: Boolean) {
-        val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime)
-
-        mLoginFormView.visibility = if (show) View.GONE else View.VISIBLE
-        mLoginFormView.animate().setDuration(shortAnimTime.toLong()).alpha(
-            (if (show) 0 else 1).toFloat()
-        ).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                mLoginFormView.visibility = if (show) View.GONE else View.VISIBLE
-            }
-        })
-
-        mProgressView.visibility = if (show) View.VISIBLE else View.GONE
-        mProgressView.animate().setDuration(shortAnimTime.toLong()).alpha(
-            (if (show) 1 else 0).toFloat()
-        ).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                mProgressView.visibility = if (show) View.VISIBLE else View.GONE
-            }
-        })
     }
 }
 

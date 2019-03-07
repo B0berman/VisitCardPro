@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.view.ViewPager
 import android.view.MenuItem
-import com.visitcardpro.api.adapters.MainPagerAdapter
+import com.visitcardpro.adapters.MainPagerAdapter
 import com.visitcardpro.R
 
 

@@ -80,6 +80,7 @@
                         android:id="@+id/sign_in_button"
                         style="?android:textAppearanceSmall"
                         android:layout_width="match_parent"
+                        android:onClick="@{() ->viewModel.loginButtonClicked()}"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="action sign in"
@@ -89,6 +90,7 @@
                 <Button
                         android:id="@+id/no_account_button"
                         style="?android:textAppearanceSmall"
+                        android:onClick="@{() ->viewModel.noAccountButtonClicked()}"
                         android:layout_gravity="center_horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

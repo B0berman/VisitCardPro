@@ -1,6 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+                name="viewModel"
+                type="com.visitcardpro.viewmodels.RegisterViewModel" />
+    </data>
+    <LinearLayout android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center_horizontal"
               android:orientation="vertical"
@@ -35,6 +41,7 @@
                         android:id="@+id/email_register"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@={viewModel.registerForm.email}"
                         android:hint="email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
@@ -51,6 +58,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="password"
+                        android:text="@={viewModel.registerForm.password}"
                         android:imeActionId="6"
                         android:imeActionLabel="action sign in"
                         android:imeOptions="actionUnspecified"
@@ -64,6 +72,7 @@
                     android:id="@+id/register_button"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
+                    android:onClick="@{() ->viewModel.registerButtonClicked()}"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="action sign in"
@@ -74,3 +83,4 @@
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
+</layout>

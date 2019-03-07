@@ -1,34 +1,29 @@
 package com.visitcardpro.views
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.annotation.TargetApi
 import android.content.pm.PackageManager
-import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.databinding.DataBindingUtil
 import com.visitcardpro.R
+import com.visitcardpro.databinding.ActivityRegisterBinding
 import com.visitcardpro.viewmodels.RegisterViewModel
 
 
 class RegisterActivity : AppCompatActivity() {
 
     private val viewModel: RegisterViewModel = RegisterViewModel(this)
-    lateinit var mEmailView: EditText
     lateinit var mPasswordView: EditText
-    lateinit var mProgressView: View
-    lateinit var mLoginFormView: View
-    private lateinit var mLoginButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+        val binding = DataBindingUtil.setContentView<ActivityRegisterBinding>(this, R.layout.activity_login)
+        binding.viewModel = viewModel
 
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -44,37 +39,11 @@ class RegisterActivity : AppCompatActivity() {
                 0
             )
         }
-        mEmailView = findViewById(R.id.email_register)
-        mLoginButton = findViewById(R.id.register_button)
         mPasswordView = findViewById(R.id.password_register)
-        mLoginFormView = findViewById(R.id.register_form)
-        mProgressView = findViewById(R.id.register_progress)
 
+        viewModel.mFormView = findViewById(R.id.register_form)
+        viewModel.mProgressView = findViewById(R.id.register_progress)
         mPasswordView.setOnEditorActionListener(viewModel.getPasswordEditorActionListener())
-        mLoginButton.setOnClickListener(viewModel.getRegisterButtonListener())
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    fun showProgress(show: Boolean) {
-        val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime)
-
-        mLoginFormView.visibility = if (show) View.GONE else View.VISIBLE
-        mLoginFormView.animate().setDuration(shortAnimTime.toLong()).alpha(
-            (if (show) 0 else 1).toFloat()
-        ).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                mLoginFormView.visibility = if (show) View.GONE else View.VISIBLE
-            }
-        })
-
-        mProgressView.visibility = if (show) View.VISIBLE else View.GONE
-        mProgressView.animate().setDuration(shortAnimTime.toLong()).alpha(
-            (if (show) 1 else 0).toFloat()
-        ).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                mProgressView.visibility = if (show) View.VISIBLE else View.GONE
-            }
-        })
     }
 }
 

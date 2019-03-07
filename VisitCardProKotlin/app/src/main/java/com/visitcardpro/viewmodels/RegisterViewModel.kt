@@ -6,12 +6,12 @@ import android.content.Intent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import com.visitcardpro.api.AuthenticationService
 import com.visitcardpro.api.Client
 import com.visitcardpro.api.CustomCallback
 import retrofit2.Call
 import retrofit2.Response
-import com.visitcardpro.api.forms.RegisterFormValidator
 import com.visitcardpro.views.LoginActivity
 import com.visitcardpro.views.RegisterActivity
 import okhttp3.ResponseBody
@@ -19,19 +19,20 @@ import okhttp3.ResponseBody
 class RegisterViewModel(var registerActivity: RegisterActivity): ViewModel() {
 
     private val authenticationService: AuthenticationService = Client.serviceFactory.getAuthenticationService()
+    var registerForm = RegisterForm()
+    var mProgressView: View? = null
+    var mFormView: View? = null
 
     private fun attemptRegister() {
 
-        var registerFormValidator = RegisterFormValidator(registerActivity)
 
-        if (registerFormValidator.isValidForm()) {
-            registerActivity.showProgress(true)
+        if (registerForm.isValidForm()) {
+            utils.showProgress(true, mFormView!!, mProgressView!!)
 
-            Client.auth.email = registerFormValidator.email
+            Client.auth.email = registerForm.email
 
             val call = authenticationService
-                .signUp(utils.generateAuthorization("${registerFormValidator.email}:${registerFormValidator.password}"))
-            print("caallllllll")
+                .signUp(utils.generateAuthorization("${registerForm.email}:${registerForm.password}"))
             call.enqueue(object : CustomCallback<ResponseBody>(registerActivity, 201) {
 
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) = when(response.code()) {
@@ -42,7 +43,7 @@ class RegisterViewModel(var registerActivity: RegisterActivity): ViewModel() {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     print("---MESSAGE--- : $t.message)")
                     print("---CAUSE--- : ${t.cause})")
-                    registerActivity.showProgress(false)
+                    utils.showProgress(false, mFormView!!, mProgressView!!)
                     val builder = AlertDialog.Builder(registerActivity)
                     builder.setMessage("$t.cause - $t.message")
                     builder.setCancelable(true)
@@ -53,7 +54,8 @@ class RegisterViewModel(var registerActivity: RegisterActivity): ViewModel() {
                 }
             })
         } else
-            registerFormValidator.focusView!!.requestFocus()
+            Toast.makeText(registerActivity, "FORM ERROR", Toast.LENGTH_SHORT).show()
+//        registerFormValidator.focusView!!.requestFocus()
     }
 
     private fun onRegistered() {
@@ -66,7 +68,7 @@ class RegisterViewModel(var registerActivity: RegisterActivity): ViewModel() {
         registerActivity.finish()
     }
 
-    fun getRegisterButtonListener() =  View.OnClickListener {
+    fun RegisterButtonClicked() {
         attemptRegister()
     }
 
